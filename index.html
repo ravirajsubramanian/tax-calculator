@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advance Tax Hub</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.2s;
+        }
+
+        nav button.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Home Page Styles */
+        .hero {
+            background: linear-gradient(135deg, var(--primary), #3b82f6);
+            color: white;
+            padding: 3rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .hero h1 {
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            background-color: white;
+            color: var(--primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .schedule-item:last-child {
+            border: none;
+        }
+
+        .date {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .resource-link {
+            display: block;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.5rem 0;
+            font-weight: 500;
+        }
+
+        .resource-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Calculator Styles */
+        .calculator-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 992px) {
+            .calculator-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section h3 {
+            margin-bottom: 1.25rem;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary);
+        }
+
+        .dynamic-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            align-items: center;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+
+        .btn-add {
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 6rem;
+            height: fit-content;
+        }
+
+        .summary-card {
+            background: var(--dark);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .summary-row.total {
+            border-bottom: 2px solid var(--secondary);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">📊 Tax calculator</div>
+        <nav>
+            <button id="nav-home" class="active" onclick="switchPage('home')">Home</button>
+            <button id="nav-calc" onclick="switchPage('calc')">Advance Tax Calculator</button>
+        </nav>
+    </header>
+
+    <div class="container">
+
+        <div id="page-home" class="page active">
+            <div class="hero">
+                <h1>Calculate & Plan Your Advance Tax</h1>
+                <p>Stay ahead of your tax obligations. Calculate your liability across multiple income categories
+                    accurately based on your current tax slab.</p>
+                <button class="btn" onclick="switchPage('calc')">Go to Calculator →</button>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h2>📅 Advance Tax Due Dates (FY 2026-27)</h2>
+                    <div class="schedule-item">
+                        <span>On or before <b>June 15</b></span>
+                        <span class="date">15% of total tax</span>
+                    </div>
+                    <div class="schedule-item">
+                        <span>On or before <b>September 15</b></span>
+                        <span class="date">45% of total tax</span>
+                    </div>
+                    <div class="schedule-item">
+                        <span>On or before <b>December 15</b></span>
+                        <span class="date">75% of total tax</span>
+                    </div>
+                    <div class="schedule-item">
+                        <span>On or before <b>March 15</b></span>
+                        <span class="date">100% of total tax</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>📚 Important Resources</h2>
+                    <a href="#" class="resource-link">💡 Who is liable to pay Advance Tax? (Tax liability > ₹10,000)</a>
+                    <a href="#" class="resource-link">📑 Understanding Short Term vs Long Term Capital Gains</a>
+                    <a href="#" class="resource-link">⚠️ Penalties under Section 234B and 234C for non-compliance</a>
+                    <a href="#" class="resource-link">🌐 Official Income Tax E-Filing Portal</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-calc" class="page">
+            <div class="calculator-layout">
+
+                <div class="main-form">
+                    <div class="form-section">
+                        <h3>Configuration</h3>
+                        <div class="form-group">
+                            <label for="slab-rate">Your Upper Tax Slab Rate (%)</label>
+                            <select id="slab-rate" onchange="calculateTax()">
+                                <option value="5">5%</option>
+                                <option value="10">10%</option>
+                                <option value="15">15%</option>
+                                <option value="20">20%</option>
+                                <option value="30" selected>30%</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>1. Bank Interest (Slab Rate) <button class="btn-add"
+                                onclick="addDynamicRow('bank-container', 'Account Name')">+ Add Account</button></h3>
+                        <div id="bank-container">
+                            <div class="dynamic-row">
+                                <input type="text" placeholder="Account Name (e.g., SBI)" value="Primary Savings">
+                                <input type="number" class="amount" placeholder="Interest Amount" value="0"
+                                    oninput="calculateTax()">
+                                <button class="btn-sm" onclick="this.parentElement.remove(); calculateTax();">X</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>2. Dividends (Slab Rate) <button class="btn-add"
+                                onclick="addDynamicRow('dividend-container', 'Company Name')">+ Add Dividend</button>
+                        </h3>
+                        <div id="dividend-container">
+                            <div class="dynamic-row">
+                                <input type="text" placeholder="Company Name" value="Company A">
+                                <input type="number" class="amount" placeholder="Dividend Amount" value="0"
+                                    oninput="calculateTax()">
+                                <button class="btn-sm" onclick="this.parentElement.remove(); calculateTax();">X</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>3a. Capital Gains: Equity (Stocks & Equity MF)</h3>
+                        <div class="form-group">
+                            <label>Short Term Capital Gains (STCG) - Taxed @ 20%</label>
+                            <input type="number" id="equity-stcg" value="0" oninput="calculateTax()">
+                        </div>
+                        <div class="form-group">
+                            <label>Long Term Capital Gains (LTCG) - Taxed @ 12.5% (Over ₹1,25,000 exemption)</label>
+                            <input type="number" id="equity-ltcg" value="0" oninput="calculateTax()">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>3b. Capital Gains: Gold ETF</h3>
+                        <div class="form-group">
+                            <label>Short Term Capital Gains (STCG) - Taxed @ Slab Rate</label>
+                            <input type="number" id="gold-stcg" value="0" oninput="calculateTax()">
+                        </div>
+                        <div class="form-group">
+                            <label>Long Term Capital Gains (LTCG) - Taxed @ 12.5%</label>
+                            <input type="number" id="gold-ltcg" value="0" oninput="calculateTax()">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>3c. Capital Gains: Debt (Bonds & Debt MF)</h3>
+                        <div class="form-group">
+                            <label>Total Capital Gains (Both Short & Long Term) - Taxed @ Slab Rate</label>
+                            <input type="number" id="debt-gains" value="0" oninput="calculateTax()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="summary-card">
+                        <h2>Tax Summary</h2>
+                        <div style="margin-top: 1.5rem;">
+                            <div class="summary-row">
+                                <span>Total Slab Rate Income:</span>
+                                <span id="lbl-slab-income">₹0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Slab Tax Liability:</span>
+                                <span id="lbl-slab-tax">₹0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Capital Gains Tax:</span>
+                                <span id="lbl-cg-tax">₹0</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total Tax Estimated:</span>
+                                <span id="lbl-total-tax">₹0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching logic
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            document.getElementById(`nav-${pageId === 'home' ? 'home' : 'calc'}`).classList.add('active');
+        }
+
+        // Dynamically add input fields for accounts/dividends
+        function addDynamicRow(containerId, placeholderText) {
+            const container = document.getElementById(containerId);
+            const row = document.createElement('div');
+            row.className = 'dynamic-row';
+            row.innerHTML = `
+                <input type="text" placeholder="${placeholderText}">
+                <input type="number" class="amount" placeholder="Amount" value="0" oninput="calculateTax()">
+                <button class="btn-sm" onclick="this.parentElement.remove(); calculateTax();">X</button>
+            `;
+            container.appendChild(row);
+        }
+
+        // Calculation Engine
+        function calculateTax() {
+            const slabRate = parseFloat(document.getElementById('slab-rate').value) / 100;
+
+            // 1. Gather Slab incomes
+            let totalSlabIncome = 0;
+
+            // Bank interest
+            document.querySelectorAll('#bank-container .amount').forEach(input => {
+                totalSlabIncome += parseFloat(input.value) || 0;
+            });
+
+            // Dividends
+            document.querySelectorAll('#dividend-container .amount').forEach(input => {
+                totalSlabIncome += parseFloat(input.value) || 0;
+            });
+
+            // Gold STCG (taxed at slab)
+            const goldStcg = parseFloat(document.getElementById('gold-stcg').value) || 0;
+            totalSlabIncome += goldStcg;
+
+            // Debt Gains (all taxed at slab)
+            const debtGains = parseFloat(document.getElementById('debt-gains').value) || 0;
+            totalSlabIncome += debtGains;
+
+            // Calculate tax on slab incomes
+            const slabTax = totalSlabIncome * slabRate;
+
+            // 2. Calculate Capital Gains Taxes (Special Rates)
+            // Equity STCG @ 20%
+            const equityStcg = parseFloat(document.getElementById('equity-stcg').value) || 0;
+            const equityStcgTax = equityStcg * 0.20;
+
+            // Equity LTCG @ 12.5% over 1,25,000 exemption
+            const equityLtcg = parseFloat(document.getElementById('equity-ltcg').value) || 0;
+            const taxableEquityLtcg = Math.max(0, equityLtcg - 125000);
+            const equityLtcgTax = taxableEquityLtcg * 0.125;
+
+            // Gold LTCG @ 12.5%
+            const goldLtcg = parseFloat(document.getElementById('gold-ltcg').value) || 0;
+            const goldLtcgTax = goldLtcg * 0.125;
+
+            const totalCgTax = equityStcgTax + equityLtcgTax + goldLtcgTax;
+
+            // 3. Overall Totals
+            const totalTax = slabTax + totalCgTax;
+
+            // Render output dashboard values
+            document.getElementById('lbl-slab-income').innerText = '₹' + totalSlabIncome.toLocaleString('en-IN');
+            document.getElementById('lbl-slab-tax').innerText = '₹' + slabTax.toLocaleString('en-IN');
+            document.getElementById('lbl-cg-tax').innerText = '₹' + totalCgTax.toLocaleString('en-IN');
+            document.getElementById('lbl-total-tax').innerText = '₹' + totalTax.toLocaleString('en-IN');
+        }
+
+        // Initialize view with base values on load
+        calculateTax();
+    </script>
+</body>
+
+</html>
