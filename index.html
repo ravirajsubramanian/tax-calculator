@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advance Tax Hub</title>
+    <title>Tax Calculator</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -317,7 +317,7 @@
                 <h1>Calculate & Plan Your Advance Tax</h1>
                 <p>Stay ahead of your tax obligations. Calculate your liability across multiple income categories
                     accurately based on your current tax slab.</p>
-                <button class="btn" onclick="switchPage('calc')">Go to Calculator →</button>
+                <button class="btn" id="btn-go-to-calc" onclick="switchPage('calc')">Go to Calculator →</button>
             </div>
 
             <div class="grid-2">
@@ -343,10 +343,14 @@
 
                 <div class="card">
                     <h2>📚 Important Resources</h2>
-                    <a href="#" class="resource-link">💡 Who is liable to pay Advance Tax? (Tax liability > ₹10,000)</a>
-                    <a href="#" class="resource-link">📑 Understanding Short Term vs Long Term Capital Gains</a>
-                    <a href="#" class="resource-link">⚠️ Penalties under Section 234B and 234C for non-compliance</a>
-                    <a href="#" class="resource-link">🌐 Official Income Tax E-Filing Portal</a>
+                    <a href="https://www.incometax.gov.in/" class="resource-link">🌐 Official Income Tax E-Filing
+                        Portal</a>
+                    <a href="https://www.incometaxindia.gov.in/w/capital-gain" class="resource-link">📑 Learn about
+                        Capital Gains in the income tax portal</a>
+                    <a href="https://www.incometaxindia.gov.in/w/5.-important-terms-or-provisions-which-a-taxpayer-needs-to-know-to-comply-with-the-income-tax-law"
+                        class="resource-link">💡 Who is liable to pay Advance Tax? (Tax liability > ₹10,000)</a>
+                    <a href="https://www.incometaxindia.gov.in/w/interest-and-fees" class="resource-link">⚠️ Interest
+                        and penalties for non-compliance of Income-tax Act</a>
                 </div>
             </div>
         </div>
@@ -355,43 +359,48 @@
             <div class="calculator-layout">
 
                 <div class="main-form">
+                    <div style="display: flex; justify-content: flex-end; padding-bottom: 15px;">
+                        <button class="btn-sm" id="btn-reset">Reset all values</button>
+                    </div>
                     <div class="form-section">
                         <h3>Configuration</h3>
                         <div class="form-group">
                             <label for="slab-rate">Your Upper Tax Slab Rate (%)</label>
-                            <select id="slab-rate" onchange="calculateTax()">
+                            <select id="slab-rate">
+                                <option value="0">0%</option>
                                 <option value="5">5%</option>
                                 <option value="10">10%</option>
                                 <option value="15">15%</option>
                                 <option value="20">20%</option>
+                                <option value="25">25%</option>
                                 <option value="30" selected>30%</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-section">
-                        <h3>1. Bank Interest (Slab Rate) <button class="btn-add"
-                                onclick="addDynamicRow('bank-container', 'Account Name')">+ Add Account</button></h3>
+                        <h3>1. Bank Interest (Slab Rate) <button id="btn-add-bank" class="btn-add">+ Add
+                                Account</button></h3>
                         <div id="bank-container">
                             <div class="dynamic-row">
-                                <input type="text" placeholder="Account Name (e.g., SBI)" value="Primary Savings">
-                                <input type="number" class="amount" placeholder="Interest Amount" value="0"
-                                    oninput="calculateTax()">
-                                <button class="btn-sm" onclick="this.parentElement.remove(); calculateTax();">X</button>
+                                <input type="text" placeholder="Account Name (e.g., SBI, HDFC)">
+                                <input type="number" id="bank_account_1" class="amount" placeholder="Interest Amount"
+                                    value="0">
+                                <button class="btn-sm" onclick="this.parentElement.remove();">X</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-section">
-                        <h3>2. Dividends (Slab Rate) <button class="btn-add"
-                                onclick="addDynamicRow('dividend-container', 'Company Name')">+ Add Dividend</button>
+                        <h3>2. Dividends (Slab Rate) <button id="btn-add-dividend" class="btn-add">+ Add
+                                Dividend</button>
                         </h3>
                         <div id="dividend-container">
                             <div class="dynamic-row">
-                                <input type="text" placeholder="Company Name" value="Company A">
-                                <input type="number" class="amount" placeholder="Dividend Amount" value="0"
-                                    oninput="calculateTax()">
-                                <button class="btn-sm" onclick="this.parentElement.remove(); calculateTax();">X</button>
+                                <input type="text" placeholder="Demat Account (e.g., Zerodha, Groww)">
+                                <input type="number" id="dividend_account_1" class="amount"
+                                    placeholder="Dividend Amount" value="0">
+                                <button class="btn-sm" onclick="this.parentElement.remove();">X</button>
                             </div>
                         </div>
                     </div>
@@ -400,11 +409,11 @@
                         <h3>3a. Capital Gains: Equity (Stocks & Equity MF)</h3>
                         <div class="form-group">
                             <label>Short Term Capital Gains (STCG) - Taxed @ 20%</label>
-                            <input type="number" id="equity-stcg" value="0" oninput="calculateTax()">
+                            <input type="number" id="equity-stcg" value="0">
                         </div>
                         <div class="form-group">
                             <label>Long Term Capital Gains (LTCG) - Taxed @ 12.5% (Over ₹1,25,000 exemption)</label>
-                            <input type="number" id="equity-ltcg" value="0" oninput="calculateTax()">
+                            <input type="number" id="equity-ltcg" value="0">
                         </div>
                     </div>
 
@@ -412,11 +421,11 @@
                         <h3>3b. Capital Gains: Gold ETF</h3>
                         <div class="form-group">
                             <label>Short Term Capital Gains (STCG) - Taxed @ Slab Rate</label>
-                            <input type="number" id="gold-stcg" value="0" oninput="calculateTax()">
+                            <input type="number" id="gold-stcg" value="0">
                         </div>
                         <div class="form-group">
                             <label>Long Term Capital Gains (LTCG) - Taxed @ 12.5%</label>
-                            <input type="number" id="gold-ltcg" value="0" oninput="calculateTax()">
+                            <input type="number" id="gold-ltcg" value="0">
                         </div>
                     </div>
 
@@ -424,7 +433,7 @@
                         <h3>3c. Capital Gains: Debt (Bonds & Debt MF)</h3>
                         <div class="form-group">
                             <label>Total Capital Gains (Both Short & Long Term) - Taxed @ Slab Rate</label>
-                            <input type="number" id="debt-gains" value="0" oninput="calculateTax()">
+                            <input type="number" id="debt-gains" value="0">
                         </div>
                     </div>
                 </div>
@@ -456,86 +465,7 @@
         </div>
     </div>
 
-    <script>
-        // Tab switching logic
-        function switchPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-
-            document.getElementById(`page-${pageId}`).classList.add('active');
-            document.getElementById(`nav-${pageId === 'home' ? 'home' : 'calc'}`).classList.add('active');
-        }
-
-        // Dynamically add input fields for accounts/dividends
-        function addDynamicRow(containerId, placeholderText) {
-            const container = document.getElementById(containerId);
-            const row = document.createElement('div');
-            row.className = 'dynamic-row';
-            row.innerHTML = `
-                <input type="text" placeholder="${placeholderText}">
-                <input type="number" class="amount" placeholder="Amount" value="0" oninput="calculateTax()">
-                <button class="btn-sm" onclick="this.parentElement.remove(); calculateTax();">X</button>
-            `;
-            container.appendChild(row);
-        }
-
-        // Calculation Engine
-        function calculateTax() {
-            const slabRate = parseFloat(document.getElementById('slab-rate').value) / 100;
-
-            // 1. Gather Slab incomes
-            let totalSlabIncome = 0;
-
-            // Bank interest
-            document.querySelectorAll('#bank-container .amount').forEach(input => {
-                totalSlabIncome += parseFloat(input.value) || 0;
-            });
-
-            // Dividends
-            document.querySelectorAll('#dividend-container .amount').forEach(input => {
-                totalSlabIncome += parseFloat(input.value) || 0;
-            });
-
-            // Gold STCG (taxed at slab)
-            const goldStcg = parseFloat(document.getElementById('gold-stcg').value) || 0;
-            totalSlabIncome += goldStcg;
-
-            // Debt Gains (all taxed at slab)
-            const debtGains = parseFloat(document.getElementById('debt-gains').value) || 0;
-            totalSlabIncome += debtGains;
-
-            // Calculate tax on slab incomes
-            const slabTax = totalSlabIncome * slabRate;
-
-            // 2. Calculate Capital Gains Taxes (Special Rates)
-            // Equity STCG @ 20%
-            const equityStcg = parseFloat(document.getElementById('equity-stcg').value) || 0;
-            const equityStcgTax = equityStcg * 0.20;
-
-            // Equity LTCG @ 12.5% over 1,25,000 exemption
-            const equityLtcg = parseFloat(document.getElementById('equity-ltcg').value) || 0;
-            const taxableEquityLtcg = Math.max(0, equityLtcg - 125000);
-            const equityLtcgTax = taxableEquityLtcg * 0.125;
-
-            // Gold LTCG @ 12.5%
-            const goldLtcg = parseFloat(document.getElementById('gold-ltcg').value) || 0;
-            const goldLtcgTax = goldLtcg * 0.125;
-
-            const totalCgTax = equityStcgTax + equityLtcgTax + goldLtcgTax;
-
-            // 3. Overall Totals
-            const totalTax = slabTax + totalCgTax;
-
-            // Render output dashboard values
-            document.getElementById('lbl-slab-income').innerText = '₹' + totalSlabIncome.toLocaleString('en-IN');
-            document.getElementById('lbl-slab-tax').innerText = '₹' + slabTax.toLocaleString('en-IN');
-            document.getElementById('lbl-cg-tax').innerText = '₹' + totalCgTax.toLocaleString('en-IN');
-            document.getElementById('lbl-total-tax').innerText = '₹' + totalTax.toLocaleString('en-IN');
-        }
-
-        // Initialize view with base values on load
-        calculateTax();
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>
