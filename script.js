@@ -128,7 +128,7 @@ const calculateTax = debounce(() => {
   const advancePaidEl = document.getElementById('advance-paid');
   const pctValue = installmentEl ? parseFloat(installmentEl.value) : 100;
   const pct = (isNaN(pctValue) ? 100 : pctValue) / 100;
-  const advancePaid = advancePaidEl ? (parseFloat(advancePaidEl.value) || 0) : 0;
+  const advancePaid = advancePaidEl ? Math.max(0, parseFloat(advancePaidEl.value) || 0) : 0;
   const requiredByDate = totalTax * pct;
   const amountDue = Math.max(0, requiredByDate - advancePaid);
 
