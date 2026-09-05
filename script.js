@@ -53,14 +53,22 @@ function resetAllValues() {
       localStorage.setItem(key, 0);
     });
     localStorage.setItem('slab-rate', 30);
+    localStorage.setItem('installment', 100);
 
     const inputs = document.querySelectorAll('input[type="number"]');
     inputs.forEach(input => {
       input.value = 0;
     });
+    const installmentSelect = document.getElementById('installment');
+    if (installmentSelect) {
+      installmentSelect.value = 100;
+    }
     calculateTax();
   }
 }
+
+// Cumulative % threshold -> due-date label for the installment summary row
+const INSTALLMENT_LABELS = { 15: '15-Jun', 45: '15-Sep', 75: '15-Dec', 100: '15-Mar' };
 
 // Calculation Engine
 const calculateTax = debounce(() => {
@@ -114,6 +122,25 @@ const calculateTax = debounce(() => {
   document.getElementById('lbl-slab-tax').innerText = '₹' + slabTax.toLocaleString('en-IN');
   document.getElementById('lbl-cg-tax').innerText = '₹' + totalCgTax.toLocaleString('en-IN');
   document.getElementById('lbl-total-tax').innerText = '₹' + totalTax.toLocaleString('en-IN');
+
+  // 4. Installment planning: amount due by the selected installment date
+  const installmentEl = document.getElementById('installment');
+  const advancePaidEl = document.getElementById('advance-paid');
+  const pctValue = installmentEl ? parseFloat(installmentEl.value) : 100;
+  const pct = (isNaN(pctValue) ? 100 : pctValue) / 100;
+  const advancePaid = advancePaidEl ? (parseFloat(advancePaidEl.value) || 0) : 0;
+  const requiredByDate = totalTax * pct;
+  const amountDue = Math.max(0, requiredByDate - advancePaid);
+
+  document.getElementById('lbl-installment-due').innerText = '₹' + requiredByDate.toLocaleString('en-IN');
+  document.getElementById('lbl-advance-paid').innerText = '₹' + advancePaid.toLocaleString('en-IN');
+  document.getElementById('lbl-amount-due').innerText = '₹' + amountDue.toLocaleString('en-IN');
+  const installmentDesc = document.getElementById('lbl-installment-desc');
+  if (installmentDesc) {
+    const pctKey = isNaN(pctValue) ? 100 : pctValue;
+    const dateLabel = INSTALLMENT_LABELS[pctKey] || `${pctKey}%`;
+    installmentDesc.innerText = `Required by ${dateLabel} (${pctKey}%):`;
+  }
 }, 500); // Debounce to prevent excessive event triggers
 
 function loadFromLocalStorage() {
@@ -185,6 +212,13 @@ window.onload = function () {
       localStorage.setItem(this.id, this.value);
       calculateTax();
     }
+  });
+
+  const installmentInput = document.getElementById('installment');
+  loadValueFromLocalStorage(installmentInput.id);
+  installmentInput.addEventListener('change', function () {
+    localStorage.setItem(this.id, this.value);
+    calculateTax();
   });
 };
 

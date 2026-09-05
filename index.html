@@ -436,6 +436,23 @@
                             <input type="number" id="debt-gains" value="0">
                         </div>
                     </div>
+
+                    <div class="form-section">
+                        <h3>4. Advance Installment Planning</h3>
+                        <div class="form-group">
+                            <label for="installment">Planning for which installment?</label>
+                            <select id="installment">
+                                <option value="15">On or before June 15 (15%)</option>
+                                <option value="45">On or before September 15 (45%)</option>
+                                <option value="75">On or before December 15 (75%)</option>
+                                <option value="100" selected>On or before March 15 (100%)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="advance-paid">Advance tax already paid this FY (₹)</label>
+                            <input type="number" id="advance-paid" value="0">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="sidebar">
@@ -454,9 +471,21 @@
                                 <span>Capital Gains Tax:</span>
                                 <span id="lbl-cg-tax">₹0</span>
                             </div>
-                            <div class="summary-row total">
+                            <div class="summary-row">
                                 <span>Total Tax Estimated:</span>
                                 <span id="lbl-total-tax">₹0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span id="lbl-installment-desc">Required by 15-Mar (100%):</span>
+                                <span id="lbl-installment-due">₹0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Advance already paid:</span>
+                                <span id="lbl-advance-paid">₹0</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Amount Due Now:</span>
+                                <span id="lbl-amount-due">₹0</span>
                             </div>
                         </div>
                     </div>
